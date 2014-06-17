@@ -38,3 +38,16 @@ PassingSpec
 * No optional parameters allowed for methods inside the `Spec.Run` block (it's a lambda thing).
 * Your helper methods, like `SetPowerTo` and `Push` above, must return a value in order to compile. (The value will be ignored.)
 * Due to these constraints, this library seems most appropriate to UI testing, where you will already be creating your own custom model to access the UI.
+* Only supports NUnit right now.
+
+### You might also like
+These other libraries can add BDD mojo to your .NET projects, at varying levels of eyeball strain.
+
+(In no particular order)
+* [StoryQ](http://storyq.codeplex.com/) - The bossy big brother to this project.
+* [SpecFlow](http://www.specflow.org/) - Full cuke-itude
+* [NSpec](http://nspec.org/) - ["it"] = () => is_so_simple_to("learn");
+* [MSpec](https://github.com/machine/machine.specifications) - Because = () => it = great;
+* [NBehave](https://github.com/nbehave/NBehave) - Why couldn't it start with 'Oh'?
+
+
