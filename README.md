@@ -51,4 +51,3 @@ These other libraries can add BDD mojo to your .NET projects, at varying levels 
 * [MSpec](https://github.com/machine/machine.specifications) - Because = () => it = great;
 * [NBehave](https://github.com/nbehave/NBehave) - Why couldn't it start with 'Oh'?
 
-
