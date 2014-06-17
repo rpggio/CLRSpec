@@ -12,10 +12,7 @@ namespace CLRSpec
 
         public override string ToString()
         {
-            string format = (StepType == StepType.Given || StepType == StepType.When)
-                ? "{0} I {1}"
-                : "{0} {1}";
-            return string.Format(format, 
+            return string.Format("{0} {1}", 
                 TextHelper.Unpack(StepType.ToString()), 
                 ExpressionDescriber.Describe(Expression));
         }

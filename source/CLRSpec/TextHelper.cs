@@ -6,7 +6,9 @@ namespace CLRSpec
     {
         internal static string Unpack(string input)
         {
-            return Regex.Replace(input, @"[\p{Lu}_]", x => " " + x.Value.ToLowerInvariant()).Trim();
+            input = Regex.Replace(input, @"[\p{Lu}_]", x => " " + x.Value.ToLowerInvariant());
+            input = Regex.Replace(input, "[_]", "");
+            return input.Trim();
         }
     }
 }

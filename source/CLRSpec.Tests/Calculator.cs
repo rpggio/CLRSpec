@@ -6,7 +6,7 @@ namespace CLRSpec.Tests
     {
         public bool PowerOn { get; private set; }
 
-        public bool SetPowerTo(bool value)
+        public bool PowerOnIs(bool value)
         {
             return true;
         }
@@ -59,7 +59,7 @@ namespace CLRSpec.Tests
             _action = action;
         }
 
-        public bool Push()
+        public bool IsPressed()
         {
             if(_action != null) _action();
             return true;

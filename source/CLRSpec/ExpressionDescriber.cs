@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -20,10 +21,10 @@ namespace CLRSpec
 
         /// <summary>
         /// Overridable rule for determining whether a method reads in reverse order.
-        /// Default criteria is whether method name starts with "should".
         /// </summary>
         public Func<MethodInfo, bool> IsReverseOrderMethod =
-            m => m.Name.StartsWith("should", StringComparison.OrdinalIgnoreCase);
+            m => m.Name.StartsWith("should", StringComparison.OrdinalIgnoreCase)
+            || m.Name.StartsWith("be", StringComparison.OrdinalIgnoreCase);
 
         public static string Describe(Expression<Action> expr, ExpressionDescriberOptions options = null)
         {
@@ -51,17 +52,27 @@ namespace CLRSpec
             return string.Join(" ", _words.ToArray());
         }
 
+        protected override void Visit(Expression expr)
+        {
+            if (expr != null && Debugger.IsAttached)
+            {
+                Debug.WriteLine("Visiting ({0}){1}", expr.NodeType, expr);
+            }
+            base.Visit(expr);
+        }
+
         protected override void VisitMemberAccess(MemberExpression expr)
         {
             switch (expr.Member.MemberType)
             {
                 case MemberTypes.Property:
-                    ApplyWord(TextHelper.Unpack(expr.Member.Name));
+                case MemberTypes.Field:
+                    ApplyWord(TextHelper.Unpack(expr.Member.Name), true);
                     break;
             }
             base.VisitMemberAccess(expr);
         }
-
+        
         protected override void VisitMethodCall(MethodCallExpression expr)
         {
             ParameterInfo[] parameters = expr.Method.GetParameters();
@@ -83,7 +94,7 @@ namespace CLRSpec
                 ? result
                 : string.Format("{0} {1}", result, argDescription);
 
-            ApplyWord(result);
+            ApplyWord(result, true);
             if (IsReverseOrderMethod(expr.Method))
             {
                 _prependNextWord = true;
@@ -92,16 +103,21 @@ namespace CLRSpec
             base.VisitMethodCall(expr);
         }
 
-        private void ApplyWord(string text)
+        private void ApplyWord(string text, bool prepend = false)
         {
-            if (_prependNextWord)
+            if (prepend || _prependNextWord)
             {
-                _prependNextWord = false;
                 _words.Insert(0, text);
             }
             else
             {
                 _words.Add(text);
+            }
+            _prependNextWord = false;
+
+            if (Debugger.IsAttached)
+            {
+                Debug.WriteLine("description: {0}", (object)string.Join(" ", _words));
             }
         }
     }

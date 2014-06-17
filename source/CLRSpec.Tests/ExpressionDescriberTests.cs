@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using NUnit.Framework;
 
 namespace CLRSpec.Tests
 {
@@ -12,7 +13,7 @@ namespace CLRSpec.Tests
         {
             Assert.That(
                 ExpressionDescriber.Describe(() => _calc.PlusButton),
-                Is.EqualTo("plus button"));
+                Is.EqualTo("calc plus button"));
         }
 
         [Test]
@@ -20,7 +21,7 @@ namespace CLRSpec.Tests
         {
             Assert.That(
                 ExpressionDescriber.Describe(() => _calc.Button(5)),
-                Is.EqualTo("button 5"));
+                Is.EqualTo("calc button 5"));
         }
 
         [Test]
@@ -29,7 +30,7 @@ namespace CLRSpec.Tests
             Assert.That(
                 ExpressionDescriber.Describe(() => _calc.Find("function", "POW"), 
                     new ExpressionDescriberOptions(){IncludeArgumentNames = true}),
-                Is.EqualTo("find type \"function\" and name \"POW\""));
+                Is.EqualTo("calc find type \"function\" and name \"POW\""));
         }
 
         [Test]
@@ -37,23 +38,32 @@ namespace CLRSpec.Tests
         {
             Assert.That(
                 ExpressionDescriber.Describe(() => _calc.Add(5, 6)),
-                Is.EqualTo("add 5 and 6"));
+                Is.EqualTo("calc add 5 and 6"));
         }
 
         [Test]
         public void DescribesChainedMethodCall()
         {
             Assert.That(
-                ExpressionDescriber.Describe(() => _calc.Button(5).Push()),
-                Is.EqualTo("push button 5"));
+                ExpressionDescriber.Describe(() => _calc.Button(5).IsPressed()),
+                Is.EqualTo("calc button 5 is pressed"));
         }
 
         [Test]
         public void DescribesExtensionMethod()
         {
             Assert.That(
-                ExpressionDescriber.Describe(() => _calc.Display.ShouldBe("11")),
-                Is.EqualTo("display should be \"11\""));
+                ExpressionDescriber.Describe(() => _calc.Display.Should().Be("11")),
+                Is.EqualTo("calc display should be \"11\""));
+        }
+
+        [Test]
+        public void DescribesFluentAssertions()
+        {
+            int x = 0;
+            Assert.That(
+                ExpressionDescriber.Describe(() => x.Should().Be(5)),
+                Is.EqualTo("x should be 5"));
         }
     }
 }

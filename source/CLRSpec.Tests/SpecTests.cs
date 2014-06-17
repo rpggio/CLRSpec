@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace CLRSpec.Tests
@@ -16,21 +17,21 @@ namespace CLRSpec.Tests
             Spec.Output = output;
             Spec.Run(s => s
                 .AsA(Student())
-                .Given(calc.SetPowerTo(true))
-                .When(calc.Button(5).Push())
-                .And(calc.PlusButton.Push())
-                .And(calc.Button(6).Push())
-                .And(calc.EqualsButton.Push())
-                .Then(calc.Display.ShouldBe("11"))
+                .Given(calc.PowerOnIs(true))
+                .When(calc.Button(5).IsPressed())
+                .And(calc.PlusButton.IsPressed())
+                .And(calc.Button(6).IsPressed())
+                .And(calc.EqualsButton.IsPressed())
+                .Then(calc.Display.Should().Be("11"))
                 );
             const string expected = @"PassingSpec
-                as a student                    => Passed
-                given I set power to True       => Passed
-                when I push button 5            => Passed
-                and push plus button            => Passed
-                and push button 6               => Passed
-                and push equals button          => Passed
-                then display should be ""11""   => Passed";
+                as a student                        => Passed
+                given calc power on is True         => Passed
+                when calc button 5 is pressed       => Passed
+                and calc plus button is pressed     => Passed
+                and calc button 6 is pressed        => Passed
+                and calc equals button is pressed   => Passed
+                then calc display should be ""11""  => Passed";
             string actual = output.ToString();
             Assert.That(Clean(actual), Is.EqualTo(Clean(expected)));
             Console.WriteLine(actual);
@@ -39,22 +40,22 @@ namespace CLRSpec.Tests
         [Test]
         public void FailingSpec()
         {
-            Console.WriteLine("------ This will read like a failing test when it succeeds. When it fails.. ------");
+            Console.WriteLine("------ This will read like a failing test when it succeeds. When it fails - good luck. ------");
             Console.WriteLine();
             var calc = new Calculator();
             var output = new StringWriter();
             Spec.Output = output;
             Spec.Run(s => s
-                .Given(calc.SetPowerTo(true))
-                .Then(calc.Display.ShouldBe("1"))
+                .Given(calc.PowerOnIs(true))
+                .Then(calc.Display.Should().Be("1"))
                 );
             const string expected = @"FailingSpec
-                given I set power to True     => Passed
-                then display should be ""1""   => Failed";
+                given calc power on is True     => Passed
+                then calc display should be ""1""    => Failed";
             string actual = output.ToString();
-            Assert.That(Clean(actual), Is.StringStarting(Clean(expected)));
-            Assert.That(actual, Is.StringContaining("Expected string length 1 but was 0"));
-            Console.WriteLine(actual);
+            // upcase to make it easier to troubleshoot
+            Assert.That(Clean(actual.ToUpper()), Is.StringStarting(Clean(expected.ToUpper())));
+            Assert.That(actual.ToUpper(), Is.StringContaining("Expected string".ToUpper()));
         }
 
         private object Student()
