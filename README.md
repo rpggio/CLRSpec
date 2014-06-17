@@ -25,7 +25,7 @@ public void AddTwoNumbers()
 ```
 produces this output:
 ```
-PassingSpec
+AddTwoNumbers
     as a student                                           => Passed
         given I set power to True                          => Passed
         when I push button 5                               => Passed
