@@ -5,16 +5,25 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 
 namespace CLRSpec
 {
+    /// <summary>
+    /// Provides a readable description from an expression tree.
+    /// </summary>
     public class ExpressionDescriber : ExpressionVisitor
     {
         private bool _prependNextWord;
         private readonly List<string> _words = new List<string>();
 
         public bool IncludeArgumentNames { get; set; }
+
+        /// <summary>
+        /// Overridable rule for determining whether a method reads in reverse order.
+        /// Default criteria is whether method name starts with "should".
+        /// </summary>
+        public Func<MethodInfo, bool> IsReverseOrderMethod =
+            m => m.Name.StartsWith("should", StringComparison.OrdinalIgnoreCase);
 
         public static string Describe(Expression<Action> expr, ExpressionDescriberOptions options = null)
         {
@@ -47,7 +56,7 @@ namespace CLRSpec
             switch (expr.Member.MemberType)
             {
                 case MemberTypes.Property:
-                    ApplyWord(Unpack(expr.Member.Name));
+                    ApplyWord(TextHelper.Unpack(expr.Member.Name));
                     break;
             }
             base.VisitMemberAccess(expr);
@@ -69,24 +78,18 @@ namespace CLRSpec
                 paramAndArgs = paramAndArgs.Skip(1);
             }
             string argDescription = string.Join(" and ", paramAndArgs.ToArray());
-            string result = Unpack(expr.Method.Name);
+            string result = TextHelper.Unpack(expr.Method.Name);
             result = argDescription.Length == 0
                 ? result
                 : string.Format("{0} {1}", result, argDescription);
 
             ApplyWord(result);
-            if (MethodIsAssertion(expr.Method))
+            if (IsReverseOrderMethod(expr.Method))
             {
                 _prependNextWord = true;
             }
 
             base.VisitMethodCall(expr);
-        }
-
-        private bool MethodIsAssertion(MethodInfo method)
-        {
-            var name = method.Name;
-            return name.StartsWith("should", StringComparison.OrdinalIgnoreCase);
         }
 
         private void ApplyWord(string text)
@@ -100,11 +103,6 @@ namespace CLRSpec
             {
                 _words.Add(text);
             }
-        }
-
-        private static string Unpack(string input)
-        {
-            return Regex.Replace(input, @"[\p{Lu}_]", x => " " + x.Value.ToLowerInvariant()).Trim();
         }
     }
 

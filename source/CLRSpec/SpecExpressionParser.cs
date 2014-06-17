@@ -4,6 +4,9 @@ using System.Linq.Expressions;
 
 namespace CLRSpec
 {
+    /// <summary>
+    /// Parses spec expression tree into steps.
+    /// </summary>
     public class SpecExpressionParser : ExpressionVisitor
     {
         private readonly List<Step> _steps = new List<Step>(); 

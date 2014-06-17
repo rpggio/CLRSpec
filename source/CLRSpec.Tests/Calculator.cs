@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace CLRSpec.Tests
 {
@@ -14,8 +13,6 @@ namespace CLRSpec.Tests
 
         public string Display { get; private set; }
 
-        private readonly Stack<int> _stack = new Stack<int>();
-
         public Calculator()
         {
             Display = "";
@@ -23,12 +20,11 @@ namespace CLRSpec.Tests
 
         public Element Button(int number)
         {
-            return new Element(() => _stack.Push(number));
+            return new Element();
         }
 
         public void Add(int a, int b)
         {
-            Display = (a + b).ToString();
         }
 
         public Element Find(string type, string name)
@@ -45,8 +41,7 @@ namespace CLRSpec.Tests
         {
             get
             {
-                return new Element(() => 
-                    Display = (_stack.Pop() + _stack.Pop()).ToString());
+                return new Element(() => Display = "11");
             }
         }
     }

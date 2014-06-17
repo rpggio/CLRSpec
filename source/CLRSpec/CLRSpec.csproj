@@ -48,7 +48,7 @@
     <Compile Include="Spec.cs" />
     <Compile Include="SpecExpressionParser.cs" />
     <Compile Include="Step.cs" />
-    <Compile Include="TextNode.cs" />
+    <Compile Include="TextHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
