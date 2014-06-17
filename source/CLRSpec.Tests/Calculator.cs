@@ -5,7 +5,12 @@ namespace CLRSpec.Tests
 {
     internal class Calculator
     {
-        public bool TurnedOn { get; set; }
+        public bool PowerOn { get; private set; }
+
+        public bool SetPowerTo(bool value)
+        {
+            return true;
+        }
 
         public string Display { get; private set; }
 
@@ -61,7 +66,7 @@ namespace CLRSpec.Tests
 
         public bool Push()
         {
-            _action();
+            if(_action != null) _action();
             return true;
         }
     }

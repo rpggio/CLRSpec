@@ -42,7 +42,7 @@ namespace CLRSpec
             return string.Join(" ", _words.ToArray());
         }
 
-        protected override Expression VisitMemberAccess(MemberExpression expr)
+        protected override void VisitMemberAccess(MemberExpression expr)
         {
             switch (expr.Member.MemberType)
             {
@@ -50,11 +50,10 @@ namespace CLRSpec
                     ApplyWord(Unpack(expr.Member.Name));
                     break;
             }
-
-            return base.VisitMemberAccess(expr);
+            base.VisitMemberAccess(expr);
         }
 
-        protected override Expression VisitMethodCall(MethodCallExpression expr)
+        protected override void VisitMethodCall(MethodCallExpression expr)
         {
             ParameterInfo[] parameters = expr.Method.GetParameters();
             ReadOnlyCollection<Expression> arguments = expr.Arguments;
@@ -81,7 +80,7 @@ namespace CLRSpec
                 _prependNextWord = true;
             }
 
-            return base.VisitMethodCall(expr);
+            base.VisitMethodCall(expr);
         }
 
         private bool MethodIsAssertion(MethodInfo method)
