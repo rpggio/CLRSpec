@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>CLRSpec</id>
+    <version>$version$</version>
+    <title>CLRSpec</title>
+    <summary>Generate BDD-style spec descriptions from tests/stories/specs written in readable C# code.</summary>
+    <authors>Ryan Smith</authors>
+    <owners>Ryan Smith</owners>
+    <licenseUrl>https://github.com/ryascl/CLRSpec/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/ryascl/CLRSpec</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Generate BDD-style spec descriptions from tests/stories/specs written in readable C# code. The entire test is specified in a single lambda expression in a fluent style. CLRSpec parses the expression tree and generates human-readable output from the code as it executes the test.
+      (Pronounced 'clear spec', if you like.)
+    </description>
+    <releaseNotes>
+      See https://github.com/ryascl/CLRSpec/releases
+    </releaseNotes>
+    <copyright>Copyright 2014 Ryan Smith</copyright>
+    <tags>NUnit TDD BDD Fluent Spec Lambda Expression</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\FluentAssertions.dll" target="lib\net403"/>
+    <file src="bin\Release\FluentAssertions.Core.dll" target="lib\net403"/>
+  </files>
+</package>

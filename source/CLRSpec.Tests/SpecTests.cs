@@ -42,7 +42,8 @@ namespace CLRSpec.Tests
         [Test]
         public void FailingSpec()
         {
-            Console.WriteLine("------ This will read like a failing test when it succeeds. When it fails - good luck. ------");
+            Console.WriteLine(
+                "------ This will read like a failing test when it succeeds. When it fails - good luck. ------");
             Console.WriteLine();
             var calc = new Calculator();
             var output = new StringWriter();
