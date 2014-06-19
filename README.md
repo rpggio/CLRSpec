@@ -41,7 +41,6 @@ AddTwoNumbers
 * No optional parameters allowed for methods inside the `Spec.Run` block (it's a lambda thing).
 * Your helper methods, like `PowerOnIs` and `Push` shown above, must return a value in order to compile. (The value will be ignored.)
 * Due to these constraints, this library is best suited for testing against a purpose-build test model like you would use for UI testing. Once I get around to adding lambda support within the step definitions (`Given`, `And`, etc), then you could easily test against a wider variety of APIs.
-* Only supports NUnit test runner right now (come on, the project is only a few days old).
 
 ### Fluent is fluent
 
