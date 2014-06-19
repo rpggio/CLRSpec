@@ -1,7 +1,7 @@
 CLRSpec
 =======
 
-Generate BDD-style spec descriptions from tests/stories/specs written in readable C# code.
+Generate BDD-style spec descriptions from tests/stories/specs written in readable C# code. The entire test is specified in a single lambda expression in a fluent style. CLRSpec parses the expression tree and generates human-readable output from the code as it executes the test.
 (Pronounced 'clear spec', if you like.)
 
 ### Example
