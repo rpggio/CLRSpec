@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Text.RegularExpressions;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace CLRSpec.Tests
@@ -64,6 +65,9 @@ namespace CLRSpec.Tests
             Assert.That(
                 ExpressionDescriber.Describe(() => x.Should().Be(5)),
                 Is.EqualTo("x should be 5"));
+            Assert.That(
+                ExpressionDescriber.Describe(() => x.Should().BeInRange(4, 6)),
+                Is.EqualTo("x should be in range 4 and 6"));
         }
     }
 }

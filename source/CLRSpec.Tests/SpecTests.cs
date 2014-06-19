@@ -18,6 +18,7 @@ namespace CLRSpec.Tests
             Spec.Run(s => s
                 .AsA(Student())
                 .Given(calc.PowerOnIs(true))
+                .And(calc.Display.Should().BeEmpty())
                 .When(calc.Button(5).IsPressed())
                 .And(calc.PlusButton.IsPressed())
                 .And(calc.Button(6).IsPressed())
@@ -27,6 +28,7 @@ namespace CLRSpec.Tests
             const string expected = @"PassingSpec
                 as a student                        => Passed
                 given calc power on is True         => Passed
+                and calc display should be empty    => Passed
                 when calc button 5 is pressed       => Passed
                 and calc plus button is pressed     => Passed
                 and calc button 6 is pressed        => Passed
