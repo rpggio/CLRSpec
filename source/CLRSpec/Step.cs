@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace CLRSpec
@@ -12,9 +13,18 @@ namespace CLRSpec
 
         public override string ToString()
         {
+            string description;
+            try
+            {
+                description = ExpressionDescriber.Describe(Expression);
+            }
+            catch
+            {
+                description = new string(Expression.ToString().Take(40).ToArray());
+            }
             return string.Format("{0} {1}", 
                 TextHelper.Unpack(StepType.ToString()), 
-                ExpressionDescriber.Describe(Expression));
+                description);
         }
     }
 

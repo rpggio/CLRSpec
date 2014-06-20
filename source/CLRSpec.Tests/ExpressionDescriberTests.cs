@@ -1,4 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -51,14 +54,6 @@ namespace CLRSpec.Tests
         }
 
         [Test]
-        public void DescribesExtensionMethod()
-        {
-            Assert.That(
-                ExpressionDescriber.Describe(() => _calc.Display.Should().Be("11")),
-                Is.EqualTo("calc display should be \"11\""));
-        }
-
-        [Test]
         public void DescribesFluentAssertions()
         {
             int x = 0;
@@ -68,6 +63,15 @@ namespace CLRSpec.Tests
             Assert.That(
                 ExpressionDescriber.Describe(() => x.Should().BeInRange(4, 6)),
                 Is.EqualTo("x should be in range 4 and 6"));
+        }
+
+        [Test]
+        public void DescribesExtensionMethod()
+        {
+            IEnumerable<string> names= new string[0];
+            Assert.That(
+                ExpressionDescriber.Describe(() => names.Count().Should().Be(5)),
+                Is.EqualTo("names count should be 5"));
         }
     }
 }

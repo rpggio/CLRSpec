@@ -80,10 +80,5 @@ namespace CLRSpec
         {
             return this;
         }
-
-        public Spec Then(Action ignored)
-        {
-            return this;
-        }
     }
 }
