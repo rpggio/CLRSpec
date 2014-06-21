@@ -19,7 +19,7 @@ namespace CLRSpec
             return _steps;
         }
 
-        protected override void VisitMethodCall(MethodCallExpression expr)
+        protected override bool VisitMethodCall(MethodCallExpression expr)
         {
             if (expr.Method.DeclaringType == typeof (Spec) && !expr.Method.IsStatic)
             {
@@ -31,6 +31,7 @@ namespace CLRSpec
             }
 
             base.VisitMethodCall(expr);
+            return true;
         }
     }
 }

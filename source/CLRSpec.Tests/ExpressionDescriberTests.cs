@@ -1,7 +1,7 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Linq.Expressions;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -12,20 +12,27 @@ namespace CLRSpec.Tests
     {
         readonly Calculator _calc = new Calculator();
 
+        //[Test]
+        //public void PrintSomething()
+        //{
+        //    IEnumerable<string> names = new string[0];
+        //    new ExpressionDiagnosticWriter(Console.Out).Write(() => names.Count().Should().Be(5));
+        //}
+
         [Test]
         public void DescribesProperty()
         {
-            Assert.That(
-                ExpressionDescriber.Describe(() => _calc.PlusButton),
-                Is.EqualTo("calc plus button"));
+            AssertDescription(
+                () => _calc.PlusButton,
+                "calc plus button");
         }
 
         [Test]
         public void DescribesMethodCall()
         {
-            Assert.That(
-                ExpressionDescriber.Describe(() => _calc.Button(5)),
-                Is.EqualTo("calc button 5"));
+             AssertDescription(
+                () => _calc.Button(5),
+                "calc button 5");
         }
 
         [Test]
@@ -40,38 +47,64 @@ namespace CLRSpec.Tests
         [Test]
         public void DescribesMethodCallWithMultipleParams()
         {
-            Assert.That(
-                ExpressionDescriber.Describe(() => _calc.Add(5, 6)),
-                Is.EqualTo("calc add 5 and 6"));
+            AssertDescription(
+                () => _calc.Add(5, 6),
+                "calc add 5 and 6");
         }
 
         [Test]
         public void DescribesChainedMethodCall()
         {
-            Assert.That(
-                ExpressionDescriber.Describe(() => _calc.Button(5).IsPressed()),
-                Is.EqualTo("calc button 5 is pressed"));
+            AssertDescription(
+                () => _calc.Button(5).IsPressed(),
+                "calc button 5 is pressed");
         }
 
         [Test]
         public void DescribesFluentAssertions()
         {
             int x = 0;
-            Assert.That(
-                ExpressionDescriber.Describe(() => x.Should().Be(5)),
-                Is.EqualTo("x should be 5"));
-            Assert.That(
-                ExpressionDescriber.Describe(() => x.Should().BeInRange(4, 6)),
-                Is.EqualTo("x should be in range 4 and 6"));
+            AssertDescription(
+                () => x.Should().Be(5),
+                "x should be 5");
+            AssertDescription(
+                () => x.Should().BeInRange(4, 6),
+                "x should be in range 4 and 6");
         }
 
         [Test]
         public void DescribesExtensionMethod()
         {
             IEnumerable<string> names= new string[0];
-            Assert.That(
-                ExpressionDescriber.Describe(() => names.Count().Should().Be(5)),
-                Is.EqualTo("names count should be 5"));
+            AssertDescription(
+                () => names.Count().Should().Be(5),
+                "names count should be 5"
+                );
+        }
+
+        private void AssertDescription(Expression<Action> expr, string expected)
+        {
+            AssertDescription((Expression)expr, expected);
+        }
+
+        private void AssertDescription<T>(Expression<Func<T>> expr, string expected)
+        {
+            AssertDescription((Expression)expr, expected);
+        }
+
+        private void AssertDescription(Expression expr, string expected)
+        {
+            try
+            {
+                var result = ExpressionDescriber.Describe(expr);
+                Assert.AreEqual(expected, result);
+            }
+            catch
+            {
+                new ExpressionDiagnosticWriter(Console.Out).Write(expr);
+                Console.WriteLine();
+                throw;
+            }
         }
     }
 }

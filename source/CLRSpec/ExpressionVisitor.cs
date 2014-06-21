@@ -5,16 +5,21 @@ using System.Linq.Expressions;
 namespace CLRSpec
 {
     /// <summary>
-    /// Base class for implementing a expression tree visitor. Read-only version of the example at:
-    /// http://msdn.microsoft.com/en-us/library/bb882521(v=vs.90).aspx
+    ///     Base class for implementing a expression tree visitor. Read-only version of the example at:
+    ///     http://msdn.microsoft.com/en-us/library/bb882521(v=vs.90).aspx
     /// </summary>
     public abstract class ExpressionVisitor
     {
-        protected virtual void Visit(Expression expr)
+        /// <summary>
+        /// Visit an expression tree, calling out to the type-specific override based on node type.
+        /// </summary>
+        /// <param name="expr"></param>
+        /// <returns>True if method was handled by an override.</returns>
+        protected virtual bool Visit(Expression expr)
         {
             if (expr == null)
             {
-                return;
+                return false;
             }
 
             switch (expr.NodeType)
@@ -27,8 +32,7 @@ namespace CLRSpec
                 case ExpressionType.ArrayLength:
                 case ExpressionType.Quote:
                 case ExpressionType.TypeAs:
-                    VisitUnary((UnaryExpression) expr);
-                    return;
+                    return VisitUnary((UnaryExpression) expr);
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
                 case ExpressionType.Subtract:
@@ -52,51 +56,38 @@ namespace CLRSpec
                 case ExpressionType.RightShift:
                 case ExpressionType.LeftShift:
                 case ExpressionType.ExclusiveOr:
-                    VisitBinary((BinaryExpression) expr);
-                    return;
+                    return VisitBinary((BinaryExpression) expr);
                 case ExpressionType.TypeIs:
-                    VisitTypeIs((TypeBinaryExpression) expr);
-                    return;
+                    return VisitTypeIs((TypeBinaryExpression) expr);
                 case ExpressionType.Conditional:
-                    VisitConditional((ConditionalExpression) expr);
-                    return;
+                    return VisitConditional((ConditionalExpression) expr);
                 case ExpressionType.Constant:
-                    VisitConstant((ConstantExpression) expr);
-                    return;
+                    return VisitConstant((ConstantExpression) expr);
                 case ExpressionType.Parameter:
-                    VisitParameter((ParameterExpression) expr);
-                    return;
+                    return VisitParameter((ParameterExpression) expr);
                 case ExpressionType.MemberAccess:
-                    VisitMemberAccess((MemberExpression) expr);
-                    return;
+                    return VisitMemberAccess((MemberExpression) expr);
                 case ExpressionType.Call:
-                    VisitMethodCall((MethodCallExpression) expr);
-                    return;
+                    return VisitMethodCall((MethodCallExpression) expr);
                 case ExpressionType.Lambda:
-                    VisitLambda((LambdaExpression) expr);
-                    return;
+                    return VisitLambda((LambdaExpression) expr);
                 case ExpressionType.New:
-                    VisitNew((NewExpression) expr);
-                    return;
+                    return VisitNew((NewExpression) expr);
                 case ExpressionType.NewArrayInit:
                 case ExpressionType.NewArrayBounds:
-                    VisitNewArray((NewArrayExpression) expr);
-                    return;
+                    return VisitNewArray((NewArrayExpression) expr);
                 case ExpressionType.Invoke:
-                    VisitInvocation((InvocationExpression) expr);
-                    return;
+                    return VisitInvocation((InvocationExpression) expr);
                 case ExpressionType.MemberInit:
-                    VisitMemberInit((MemberInitExpression) expr);
-                    return;
+                    return VisitMemberInit((MemberInitExpression) expr);
                 case ExpressionType.ListInit:
-                    VisitListInit((ListInitExpression) expr);
-                    return;
+                    return VisitListInit((ListInitExpression) expr);
                 default:
                     throw new Exception(string.Format("Unhandled expression type: '{0}'", expr.NodeType));
             }
         }
 
-        protected virtual void VisitBinding(MemberBinding binding)
+        protected virtual bool VisitBinding(MemberBinding binding)
         {
             switch (binding.BindingType)
             {
@@ -112,126 +103,148 @@ namespace CLRSpec
                 default:
                     throw new Exception(string.Format("Unhandled binding type '{0}'", binding.BindingType));
             }
+            return false;
         }
 
-        protected virtual void VisitElementInitializer(ElementInit init)
+        protected virtual bool VisitElementInitializer(ElementInit init)
         {
             VisitExpressionList(init.Arguments);
+            return false;
         }
 
-        protected virtual void VisitUnary(UnaryExpression expr)
+        protected virtual bool VisitUnary(UnaryExpression expr)
         {
             Visit(expr.Operand);
+            return false;
         }
 
-        protected virtual void VisitBinary(BinaryExpression expr)
+        protected virtual bool VisitBinary(BinaryExpression expr)
         {
             Visit(expr.Left);
             Visit(expr.Right);
             Visit(expr.Conversion);
+            return false;
         }
 
-        protected virtual void VisitTypeIs(TypeBinaryExpression expr)
+        protected virtual bool VisitTypeIs(TypeBinaryExpression expr)
         {
             Visit(expr.Expression);
+            return false;
         }
 
-        protected virtual void VisitConstant(ConstantExpression expr)
+        protected virtual bool VisitConstant(ConstantExpression expr)
         {
+            return false;
         }
 
-        protected virtual void VisitConditional(ConditionalExpression expr)
+        protected virtual bool VisitConditional(ConditionalExpression expr)
         {
             Visit(expr.Test);
             Visit(expr.IfTrue);
             Visit(expr.IfFalse);
+            return false;
         }
 
-        protected virtual void VisitParameter(ParameterExpression expr)
+        protected virtual bool VisitParameter(ParameterExpression expr)
         {
+            return false;
         }
 
-        protected virtual void VisitMemberAccess(MemberExpression expr)
+        protected virtual bool VisitMemberAccess(MemberExpression expr)
         {
             Visit(expr.Expression);
+            return false;
         }
 
-        protected virtual void VisitMethodCall(MethodCallExpression expr)
+        protected virtual bool VisitMethodCall(MethodCallExpression expr)
         {
             Visit(expr.Object);
             VisitExpressionList(expr.Arguments);
+            return false;
         }
 
-        protected virtual void VisitExpressionList(ReadOnlyCollection<Expression> exprs)
+        protected virtual bool VisitExpressionList(ReadOnlyCollection<Expression> exprs)
         {
             foreach (var expr in exprs)
             {
                 Visit(expr);
             }
+            return false;
         }
 
-        protected virtual void VisitMemberAssignment(MemberAssignment assignment)
+        protected virtual bool VisitMemberAssignment(MemberAssignment assignment)
         {
             Visit(assignment.Expression);
+            return false;
         }
 
-        protected virtual void VisitMemberMemberBinding(MemberMemberBinding binding)
+        protected virtual bool VisitMemberMemberBinding(MemberMemberBinding binding)
         {
             VisitBindingList(binding.Bindings);
+            return false;
         }
 
-        protected virtual void VisitMemberListBinding(MemberListBinding binding)
+        protected virtual bool VisitMemberListBinding(MemberListBinding binding)
         {
             VisitElementInitializerList(binding.Initializers);
+            return false;
         }
 
-        protected virtual void VisitBindingList(ReadOnlyCollection<MemberBinding> bindings)
+        protected virtual bool VisitBindingList(ReadOnlyCollection<MemberBinding> bindings)
         {
             foreach (var exprItem in bindings)
             {
                 VisitBinding(exprItem);
             }
+            return false;
         }
 
-        protected virtual void VisitElementInitializerList(ReadOnlyCollection<ElementInit> inits)
+        protected virtual bool VisitElementInitializerList(ReadOnlyCollection<ElementInit> inits)
         {
             foreach (var init in inits)
             {
                 VisitElementInitializer(init);
             }
+            return false;
         }
 
-        protected virtual void VisitLambda(LambdaExpression expr)
+        protected virtual bool VisitLambda(LambdaExpression expr)
         {
             Visit(expr.Body);
+            return false;
         }
 
-        protected virtual void VisitNew(NewExpression expr)
+        protected virtual bool VisitNew(NewExpression expr)
         {
             VisitExpressionList(expr.Arguments);
+            return false;
         }
 
-        protected virtual void VisitMemberInit(MemberInitExpression init)
+        protected virtual bool VisitMemberInit(MemberInitExpression init)
         {
             VisitNew(init.NewExpression);
             VisitBindingList(init.Bindings);
+            return false;
         }
 
-        protected virtual void VisitListInit(ListInitExpression init)
+        protected virtual bool VisitListInit(ListInitExpression init)
         {
             VisitNew(init.NewExpression);
             VisitElementInitializerList(init.Initializers);
+            return false;
         }
 
-        protected virtual void VisitNewArray(NewArrayExpression expr)
+        protected virtual bool VisitNewArray(NewArrayExpression expr)
         {
             VisitExpressionList(expr.Expressions);
+            return false;
         }
 
-        protected virtual void VisitInvocation(InvocationExpression expr)
+        protected virtual bool VisitInvocation(InvocationExpression expr)
         {
             VisitExpressionList(expr.Arguments);
             Visit(expr.Expression);
+            return false;
         }
     }
 }

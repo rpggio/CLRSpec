@@ -52,16 +52,17 @@ namespace CLRSpec
             return string.Join(" ", _words.ToArray());
         }
 
-        protected override void Visit(Expression expr)
+        protected override bool Visit(Expression expr)
         {
             if (expr != null && Debugger.IsAttached)
             {
                 Debug.WriteLine("Visiting ({0}){1}", expr.NodeType, expr);
             }
             base.Visit(expr);
+            return true;
         }
 
-        protected override void VisitMemberAccess(MemberExpression expr)
+        protected override bool VisitMemberAccess(MemberExpression expr)
         {
             switch (expr.Member.MemberType)
             {
@@ -71,9 +72,10 @@ namespace CLRSpec
                     break;
             }
             base.VisitMemberAccess(expr);
+            return true;
         }
         
-        protected override void VisitMethodCall(MethodCallExpression expr)
+        protected override bool VisitMethodCall(MethodCallExpression expr)
         {
             ParameterInfo[] parameters = expr.Method.GetParameters();
             ReadOnlyCollection<Expression> arguments = expr.Arguments;
@@ -101,6 +103,7 @@ namespace CLRSpec
             }
 
             base.VisitMethodCall(expr);
+            return true;
         }
 
         private void ApplyWord(string text, bool prepend = false)
