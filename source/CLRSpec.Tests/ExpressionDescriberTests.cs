@@ -12,13 +12,6 @@ namespace CLRSpec.Tests
     {
         readonly Calculator _calc = new Calculator();
 
-        //[Test]
-        //public void PrintSomething()
-        //{
-        //    IEnumerable<string> names = new string[0];
-        //    new ExpressionDiagnosticWriter(Console.Out).Write(() => names.Count().Should().Be(5));
-        //}
-
         [Test]
         public void DescribesProperty()
         {

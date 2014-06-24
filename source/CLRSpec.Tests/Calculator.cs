@@ -27,6 +27,10 @@ namespace CLRSpec.Tests
         {
         }
 
+        public void Clear()
+        {
+        }
+
         public Element Find(string type, string name)
         {
             return new Element();

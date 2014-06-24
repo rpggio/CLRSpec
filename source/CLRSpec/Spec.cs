@@ -35,8 +35,11 @@ namespace CLRSpec
                     output.Write("{0,-50} => ", step);
                     try
                     {
-                        var stepAction = Expression.Lambda<Action>(step.Expression).Compile();
-                        stepAction();
+                        Expression<Action> stepAction = step.Expression.NodeType == ExpressionType.Lambda
+                            ? (Expression<Action>) step.Expression
+                            : Expression.Lambda<Action>(step.Expression);
+                        var compiledAction = stepAction.Compile();
+                        compiledAction();
                         output.Write("Passed");
                     }
                     catch(Exception ex)
@@ -61,7 +64,17 @@ namespace CLRSpec
             return this;
         }
 
+        public Spec AsA(Expression<Action> action)
+        {
+            return this;
+        }
+
         public Spec Given(object ignored)
+        {
+            return this;
+        }
+
+        public Spec Given(Expression<Action> action)
         {
             return this;
         }
@@ -71,12 +84,27 @@ namespace CLRSpec
             return this;
         }
 
+        public Spec When(Expression<Action> action)
+        {
+            return this;
+        }
+
         public Spec And(object ignored)
         {
             return this;
         }
 
+        public Spec And(Expression<Action> action)
+        {
+            return this;
+        }
+
         public Spec Then(object ignored)
+        {
+            return this;
+        }
+
+        public Spec Then(Expression<Action> action)
         {
             return this;
         }

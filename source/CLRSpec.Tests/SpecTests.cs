@@ -61,9 +61,46 @@ namespace CLRSpec.Tests
             Assert.That(actual.ToUpper(), Is.StringContaining("Expected string".ToUpper()));
         }
 
+        [Test]
+        public void CanDescribeLambdas()
+        {
+            var calc = new Calculator();
+            var output = new StringWriter();
+            Spec.Output = output;
+            Spec.Run(s => s
+                .Given(() => calc.Clear())
+                );
+            const string expected = @"CanDescribeLambdas
+                given calc clear                    => Passed";
+            string actual = output.ToString();
+            Assert.That(Clean(actual), Is.EqualTo(Clean(expected)));
+            Console.WriteLine(actual);
+        }
+
+        [Test]
+        public void ExecutesLambdas()
+        {
+            var output = new StringWriter();
+            Spec.Output = output;
+            Spec.Run(s => s
+                .Given(() => Boom())
+                );
+            const string expected = @"ExecutesLambdas
+                given boom                    => Failed";
+            string actual = output.ToString();
+            // upcase to make it easier to troubleshoot
+            Assert.That(Clean(actual.ToUpper()), Is.StringStarting(Clean(expected.ToUpper())));
+            Assert.That(actual.ToUpper(), Is.StringContaining("boom happened".ToUpper()));
+        }
+
         private object Student()
         {
             return null;
+        }
+
+        private void Boom()
+        {
+            throw new Exception("boom happened");
         }
 
         private static string Clean(string value)

@@ -23,10 +23,15 @@ namespace CLRSpec
         {
             if (expr.Method.DeclaringType == typeof (Spec) && !expr.Method.IsStatic)
             {
+                var child = expr.Arguments[0];
+                if (child.NodeType == ExpressionType.Quote)
+                {
+                    child = ((UnaryExpression) child).Operand;
+                }
                 _steps.Add(new Step()
                 {
                     StepType = (StepType)Enum.Parse(typeof(StepType), expr.Method.Name),
-                    Expression = expr.Arguments[0]
+                    Expression = child
                 });
             }
 
