@@ -24,6 +24,7 @@ namespace CLRSpec
 
             var parser = new SpecExpressionParser();
             var steps = parser.Parse(action);
+            Exception exception = null;
             foreach (var step in steps)
             {
                 if (step.Expression == null)
@@ -44,6 +45,10 @@ namespace CLRSpec
                     }
                     catch(Exception ex)
                     {
+                        if (exception == null)
+                        {
+                            exception = ex;
+                        }
                         output.Write("Failed");
                         output.WriteLine();
                         output.WriteLine();
@@ -55,6 +60,11 @@ namespace CLRSpec
                 if (step.StepType == StepType.AsA)
                 {
                     output.Indent++;
+                }
+
+                if (exception != null)
+                {
+                    throw exception;
                 }
             }
         }

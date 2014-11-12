@@ -42,22 +42,22 @@ namespace CLRSpec.Tests
         [Test]
         public void FailingSpec()
         {
-            Console.WriteLine(
-                "------ This will read like a failing test when it succeeds. When it fails - good luck. ------");
             Console.WriteLine();
             var calc = new Calculator();
             var output = new StringWriter();
             Spec.Output = output;
-            Spec.Run(s => s
-                .Given(calc.PowerOnIs(true))
-                .Then(calc.Display.Should().Be("1"))
+            Assert.Throws<AssertionException>(() =>
+                Spec.Run(s => s
+                    .Given(calc.PowerOnIs(true))
+                    .Then(calc.Display.Should().Be("1"))
+                    )
                 );
-            const string expected = @"FailingSpec
+            const string expected = @"
                 given calc power on is True     => Passed
                 then calc display should be ""1""    => Failed";
             string actual = output.ToString();
             // upcase to make it easier to troubleshoot
-            Assert.That(Clean(actual.ToUpper()), Is.StringStarting(Clean(expected.ToUpper())));
+            Assert.That(Clean(actual.ToUpper()), Is.StringContaining(Clean(expected.ToUpper())));
             Assert.That(actual.ToUpper(), Is.StringContaining("Expected string".ToUpper()));
         }
 
@@ -82,14 +82,15 @@ namespace CLRSpec.Tests
         {
             var output = new StringWriter();
             Spec.Output = output;
-            Spec.Run(s => s
-                .Given(() => Boom())
-                );
-            const string expected = @"ExecutesLambdas
-                given boom                    => Failed";
+            Assert.Throws<Exception>(() =>
+                Spec.Run(s => s
+                    .Given(() => Boom())
+                    )
+            );
+            const string expected = @"given boom                    => Failed";
             string actual = output.ToString();
             // upcase to make it easier to troubleshoot
-            Assert.That(Clean(actual.ToUpper()), Is.StringStarting(Clean(expected.ToUpper())));
+            Assert.That(Clean(actual.ToUpper()), Is.StringContaining(Clean(expected.ToUpper())));
             Assert.That(actual.ToUpper(), Is.StringContaining("boom happened".ToUpper()));
         }
 
